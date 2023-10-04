@@ -1,0 +1,23 @@
+{% extends  'users/section/main.html'%}
+{% load static %}
+{% block title %}Login/Register{% endblock %}
+{% block content %}
+
+<div class="login-page">
+  <div class="form">
+    <form class="login-form" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
+      <h2><i class="fas fa-lock"></i> Login</h2>
+      <input type="text" placeholder="Username" name="username" autocomplete="off" required />
+      <input type="password" placeholder="Password" name="password" autocomplete="off" required/>
+      <button type="submit" value="submit" name="send2">login</button>
+      <p class="message">Not registered? <a href="{% url 'register' %}">Create an account</a></p>
+      <p class="message"><a style="color: red;">
+        {% for message in messages %}
+            {{message}}
+      {%endfor%}
+    </a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

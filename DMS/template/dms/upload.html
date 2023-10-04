@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Files</title>
+    <link rel="stylesheet" href="{% static 'css/upload.css' %}">
+</head>
+<body>
+<form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container">
+        <div class="card">
+            <h3>Upload File</h3>
+          <div class="drop_box">
+            <header>
+            {%if messages%}
+            {% for message in messages %}
+            <h4 style="color: red;">{{message}}</h4>
+            {%endfor%}
+            {%else%}
+            <h4>Select File here</h4>
+          {%endif%}
+            </header>
+            <br>
+            <input type="file" name="file" id="fil" style="display: none;" onchange="updateLabel()">
+            <p> <label for="fil" id="fileLabel">Click Here .... </label></p>
+            <button class="btn" type="submit">Submit</button>
+          </div>     
+        </div>
+      </div>
+</form> 
+<script>
+  function updateLabel() {
+    const fileInput = document.getElementById('fil');
+    const fileLabel = document.getElementById('fileLabel');
+
+    if (fileInput.files.length > 0) {
+      fileLabel.textContent = fileInput.files[0].name;
+    } else {
+      fileLabel.textContent = 'Click Here ....';
+    }
+  }
+  
+</script>
+<!-- <script src="{% static 'js/upload.js' %}"></script>   -->
+</body>
+</html>
