@@ -12,18 +12,18 @@ from django.contrib import messages
 @login_required(login_url='login')
 def index(request):
     user = UserInfo.objects.get(user=request.user)
-    files = Files.objects.filter(uploaded_by=request.user, new_version=False)
+    files = Files.objects.filter(uploaded_by=request.user)
     new_ver = Version_control.objects.filter(uploaded_by=request.user)
-    if new_ver.count() > 0:
-        for new in new_ver:
-            if new.new_version == True:
-                print("New Version for the file uploaded by another user")
-                new_ver = Version_control.objects.filter(org_name=new.org_name, new_version=False)
-        data = new_ver
-    else:
-        data = files 
 
-    context = {'data': data, 'index':'index', 'user':user}
+    #solve for showing both files for files and new_ver
+
+    if new_ver.count() > 0:
+        context = {'data': new_ver, 'index':'index', 'user':user}
+    elif files.count() > 0:
+        context = {'data': files, 'index':'index', 'user':user}    
+    else:
+         context = {'data': files, 'data1':new_ver, 'index':'index', 'user':user}
+
     return render(request, 'dms/index.html', context)
 
 @login_required(login_url='login')
@@ -49,11 +49,11 @@ def for_me(request):
 def upload_files(request):
 
     if request.method == 'POST':
-
         try:
             file = request.FILES['file']
             name, type = file_type(request)
             org_name = clean_name(name)
+            group = request.POST['group']
         except:
             messages.error(request, 'Please choose a file to upload!')
             return redirect('upload')
@@ -62,28 +62,41 @@ def upload_files(request):
         if file_is_valid(type):
             if check_file_version(org_name, type):
                 if check_prev_version(org_name, type):
-                    messages.success(request, 'Previous version control exist')
                     file1 = file1 = Files.objects.get(name=name, extension=type)
                     version_ctrl = Version_control.objects.get(org_name=org_name, prev_version=file1, new_version=False)
-                    print(version_ctrl)
+                    
+                    name = name + '_' + str(version_ctrl.version + 1)
+                    version = version_ctrl.version + 1
+                    print(name, version, org_name)
+
+                    # new_version update on previos version
+                    vc = Version_control.objects.create(name=name, prev_version=file1, file=file, org_name=org_name, uploaded_by = request.user, version=version, group=group,extension=type)
+                    vc.save()
+                    version_ctrl.new_version=True
+                    version_ctrl.save()
+
+                    vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
+                    vc1.pre_ver_control = version_ctrl
+                    vc1.save()
+
+                    return redirect('index')
                 else:
                     try:
                         file1 = Files.objects.get(name=name, extension=type)
                         name = name + '_' + str(file1.version + 1)
                         version = file1.version + 1
                         
-                        # vc = Version_control.objects.create(name=name, prev_version=file1, file=file, org_name=org_name, uploaded_by = request.user, version=version)
-                        # vc.save()
-                        # file1.new_version=True
-                        # file1.save()
+                        vc = Version_control.objects.create(name=name, prev_version=file1, file=file, org_name=org_name, uploaded_by = request.user, version=version, group=group, extension=type)
+                        vc.save()
+                        file1.new_version=True
+                        file1.save()
 
-                        # vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
-                        # vc1.pre_ver_control = vc1
-                        # vc1.save()
+                        vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
+                        vc1.pre_ver_control = vc1
+                        vc1.save()
 
-                        messages.success(request, 'File already exist, Saving as new version')
-                            
-                        return redirect('upload')
+                        return redirect('index')
+
                     except Exception as e:
                         print(e)
                         messages.error(request, 'File could not be uploaded, Please try again')
@@ -91,18 +104,18 @@ def upload_files(request):
                 
             else:
                 messages.error(request, 'Saving New File')
-                # try:
-                #     file = Files.objects.create(file=file,
-                #                                 name=name,
-                #                                 org_name=org_name
-                #                                 extension=type,
-                #                                 uploaded_by=request.user)
-                #     file.save()
-                #     messages.success(request, 'File uploaded successfully')
-                #     return redirect('index')
-                # except:
-                #     messages.error(request, 'File could not be uploaded, Please try again')
-                #     return redirect('index')
+                try:
+                    file = Files.objects.create(file=file,
+                                                name=name,
+                                                org_name=org_name,
+                                                extension=type,
+                                                uploaded_by=request.user,
+                                                group=group)
+                    file.save()
+                    return redirect('index')
+                except:
+                    messages.error(request, 'File could not be uploaded, Please try again')
+                    return redirect('upload')
                     
         else:
             messages.success(request, 'File extension is not allowed, Please a different file')   
@@ -114,5 +127,8 @@ def upload_files(request):
     
     return render(request, 'dms/upload.html', context)
 
-
-    
+@login_required(login_url='login')
+def edit_profile(request):
+    profile = UserInfo.objects.get(user=request.user)
+    context = {'edit_user':'edit_user', 'data':profile}
+    return render(request, 'dms/edit_profile.html', context)

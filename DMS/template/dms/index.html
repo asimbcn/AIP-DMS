@@ -71,14 +71,29 @@
           <a href="{{d.fileURL}}" download="{{d.org_name}}}" >
             <i class=" material-icons right">cloud_download</i>
           </a>
+        </div>
           
-      
         {%endfor%}
-        {%else%}
+        {%endif%}
+        {% if data1 %}
+        {% for d in data1 %}
+        
         <div class="card-panel folder">
-            <a style="text-decoration: none; color:black">No Files Uploded</a>
+          <div class="tooltip">
+            <a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
+            onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
+              <span class="tooltiptext">Version: {{d.version}}<br>Uploaded by: {{d.uploaded_by}}<br>Created:<br> {{d.created_at|timesince  }} ago</span>        
+            </a>
+          </div>
+          <a href="{{d.fileURL}}" download="{{d.org_name}}}" >
+            <i class=" material-icons right">cloud_download</i>
+          </a>
+        </div>
+          
+        {%endfor%}
         {%endif%}
       </div>
+    </div>
     </div>
     </div>
 

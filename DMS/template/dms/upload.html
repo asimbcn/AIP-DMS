@@ -25,7 +25,15 @@
             </header>
             <br>
             <input type="file" name="file" id="fil" style="display: none;" onchange="updateLabel()">
-            <p> <label for="fil" id="fileLabel">Click Here .... </label></p>
+            <p><label for="fil" id="fileLabel">Click Here .... </label> </p>
+            <p style="all: revert; font-size: small;"><label for="group">Visible group:</label>
+              <select id="group" name="group">
+                <option value="all">All</option>
+                <option value="management">Management</option>
+                <option value="accounting">Accounting</option>
+                <option value="sales">Sales</option>
+                <option value="tech">Tech</option>
+              </select></p>
             <button class="btn" type="submit">Submit</button>
           </div>     
         </div>
