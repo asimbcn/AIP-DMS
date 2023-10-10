@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +42,34 @@ INSTALLED_APPS = [
     'Users.apps.UsersConfig',
     'System.apps.SystemConfig',
     'crispy_forms',
+    'django_admin_logs',
 ]
+
+DJANGO_ADMIN_LOGS_DELETABLE = False
+DJANGO_ADMIN_LOGS_ENABLED = True
+
+JAZZMIN_SETTINGS = {
+     "site_title": "DMS - Admin",
+      "site_brand": "Admin Panel",
+       "site_logo": "media/logo.jpg",
+        "login_logo": None,
+         "site_logo_classes": "img-circle",
+          "site_icon": None,
+          "welcome_sign": "Welcome to the Admin Panel",
+
+          "show_ui_builder": False,
+         
+
+          "topmenu_links": [
+
+        # Url that gets reversed (Permissions can be added)
+        {"name": "Statistics",  "url": "stats", "new_window": True},
+
+        # external url that opens in a new window (Permissions can be added)
+        {"name": "Homepage", "url": "index", "new_window": True},
+
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

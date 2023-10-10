@@ -6,6 +6,7 @@ body {
   .card-panal {
     padding: 15px, 20px;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+    
   }
   .container-fluid {
     padding: 1rem 2.5rem;
@@ -160,6 +161,9 @@ body {
     display: inline-block;
     margin: 15px 20px 15px 0;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .folder i {
     color: rgba(0, 0, 0, 0.54);

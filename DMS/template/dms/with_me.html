@@ -1,55 +1,40 @@
 {% extends  'dms/section/main.html'%}
 {% load static %}
 {% block title %}Shared with Me{% endblock %}
-{% block css %}
+{%block css%}
 <style>
-.tooltip {
-  position: relative;
-  display: inline-block;
-  /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
-}
+  /* Tooltip container */
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+  }
+  
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #ffffff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+   
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    /* width: 120px; */
+    top: 100%;
+    left: 100px;
+  margin-left: -120px;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  </style>
 
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text */
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
-
-  /* Fade in tooltip */
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-/* Tooltip arrow */
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-
-}
-</style>
 {% endblock%}
 
 {% block content %}
@@ -60,16 +45,14 @@
         {% for d in data %}
         
         <div class="card-panel folder">
-          <div class="tooltip">
-            <a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
+          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+            <i class=" material-icons left">folder</i>
+          </a>          
+          <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
             onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
-              <span class="tooltiptext">Version: {{d.version}}<br>Uploaded by: {{d.uploaded_by}}<br>Created:{{d.created_at|timesince}} ago</span>        
-            </a>
-          </div>
-          <a href="{{d.fileURL}}" download="{{d.org_name}}}" >
-            <i class=" material-icons right">cloud_download</i>
-          </a>
-          </div>
+           </a> <span class="tooltiptext">Version : {{d.version}}</span>
+          </div>         
+        </div>
         {%endfor%}
         {%endif%}
 
@@ -77,16 +60,14 @@
         {% for d in data1 %}
         
         <div class="card-panel folder">
-          <div class="tooltip">
-            <a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
+          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+            <i class=" material-icons left">folder</i>
+          </a>          
+          <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
             onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
-              <span class="tooltiptext">Version: {{d.version}}<br>Uploaded by: {{d.uploaded_by}}<br>Created:{{d.created_at|timesince  }} ago</span>        
-            </a>
-          </div>
-          <a href="{{d.fileURL}}" download="{{d.org_name}}}" >
-            <i class=" material-icons right">cloud_download</i>
-          </a>
-      </div>
+           </a> <span class="tooltiptext">Version : {{d.version}}</span>
+          </div>         
+        </div>
         {%endfor%}
         {%endif%}
   

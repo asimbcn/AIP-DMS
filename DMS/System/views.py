@@ -15,13 +15,16 @@ def index(request):
     files = Files.objects.filter(uploaded_by=request.user)
     new_ver = Version_control.objects.filter(uploaded_by=request.user)
 
-    #solve for showing both files for files and new_ver
+    #show all prev version in front end
 
     if new_ver.count() > 0:
+        print('new_ver')
         context = {'data': new_ver, 'index':'index', 'user':user}
     elif files.count() > 0:
+        print('files')
         context = {'data': files, 'index':'index', 'user':user}    
     else:
+         print('both')
          context = {'data': files, 'data1':new_ver, 'index':'index', 'user':user}
 
     return render(request, 'dms/index.html', context)
@@ -129,6 +132,19 @@ def upload_files(request):
 
 @login_required(login_url='login')
 def edit_profile(request):
+    if request.method == 'POST':
+        try:
+            print(request.FILES['file'])
+        except Exception as e:
+            print(e)
     profile = UserInfo.objects.get(user=request.user)
     context = {'edit_user':'edit_user', 'data':profile}
     return render(request, 'dms/edit_profile.html', context)
+
+@login_required(login_url='login')
+def stats(request):
+    if request.user.is_staff == True:
+
+        return HttpResponse('Stats')
+    else:
+        return HttpResponse('Not permitted')
