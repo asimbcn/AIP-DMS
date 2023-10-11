@@ -45,7 +45,7 @@
         {% for d in data %}
         
         <div class="card-panel folder">
-          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+          <a href="{% url 'view' pk=d.id type='file' %}">
             <i class=" material-icons left">folder</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
@@ -60,7 +60,7 @@
         {% for d in data1 %}
         
         <div class="card-panel folder">
-          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+          <a href="{% url 'view' pk=d.id type='version' %}">
             <i class=" material-icons left">folder</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
