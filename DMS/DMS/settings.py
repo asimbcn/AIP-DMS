@@ -58,15 +58,14 @@ JAZZMIN_SETTINGS = {
           "welcome_sign": "Welcome to the Admin Panel",
 
           "show_ui_builder": False,
-         
-
-          "topmenu_links": [
+            "copyright": "Paperless Pioneers Pvt. Ltd.",
+          "topmenu_links": [    
 
         # Url that gets reversed (Permissions can be added)
         {"name": "Statistics",  "url": "stats", "new_window": True},
 
         # external url that opens in a new window (Permissions can be added)
-        {"name": "Homepage", "url": "index", "new_window": True},
+        {"name": "Homepage", "url": "redir", "new_window": True},
 
     ],
 }

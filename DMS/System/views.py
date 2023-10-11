@@ -12,19 +12,16 @@ from django.contrib import messages
 @login_required(login_url='login')
 def index(request):
     user = UserInfo.objects.get(user=request.user)
-    files = Files.objects.filter(uploaded_by=request.user)
-    new_ver = Version_control.objects.filter(uploaded_by=request.user)
+    files = Files.objects.filter(uploaded_by=request.user, new_version=False)
+    new_ver = Version_control.objects.filter(uploaded_by=request.user, new_version=False)
 
     #show all prev version in front end
 
     if new_ver.count() > 0:
-        print('new_ver')
-        context = {'data': new_ver, 'index':'index', 'user':user}
-    elif files.count() > 0:
-        print('files')
+        context = {'data1': new_ver, 'index':'index', 'user':user}
+    if files.count() > 0:
         context = {'data': files, 'index':'index', 'user':user}    
-    else:
-         print('both')
+    if new_ver.count() > 0 and files.count() > 0:
          context = {'data': files, 'data1':new_ver, 'index':'index', 'user':user}
 
     return render(request, 'dms/index.html', context)
@@ -36,16 +33,12 @@ def for_me(request):
     new_ver = Version_control.objects.filter(Q(group=profile.group) | Q(group="all") & Q(new_version=False))
  
     if files.count() == 0:
-        data = new_ver
-        context = {'data': data, 'shared':'shared','user':profile}
-    elif new_ver.count() == 0:
-        data = files
-        context = {'data': data, 'shared':'shared','user':profile}
-    else:
-        data = files
-        data1 = new_ver
-        context = {'data': data, 'data1': data1, 'shared':'shared', 'user':profile}
-    
+        context = {'data1': new_ver, 'shared':'shared','user':profile}
+    if new_ver.count() == 0:
+        context = {'data': files, 'shared':'shared','user':profile}
+    if new_ver.count() > 0 and files.count() > 0:
+        context = {'data': files, 'data1': new_ver, 'shared':'shared', 'user':profile}
+
     return render(request, 'dms/with_me.html', context)
 
 @login_required(login_url='login')
@@ -148,3 +141,36 @@ def stats(request):
         return HttpResponse('Stats')
     else:
         return HttpResponse('Not permitted')
+    
+@login_required(login_url='login')
+def search(request):
+    profile = UserInfo.objects.get(user=request.user)
+    context= {'search':'search','user':profile}
+    
+    if request.method == 'POST':
+        search = request.POST['search']
+        print(search)
+        files = Files.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search)).filter(Q(group=profile.group) | Q(group="all") | Q(uploaded_by=request.user ))
+        new_ver = Version_control.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search)).filter(Q(group=profile.group) | Q(group="all")| Q(uploaded_by=request.user ))
+
+        # all in one compact file
+        
+        if files.count() == 0:
+            data = new_ver
+            context={'search':'search','user':profile,'data':data}
+        elif new_ver.count() == 0:
+            data = files
+            context={'search':'search','user':profile,'data':data}
+        else: 
+            data = files
+            data1 = new_ver
+            context={'search':'search','user':profile,'data':data,'data1':data1}
+        
+    
+    return render(request, 'dms/search.html',context) 
+
+
+@login_required(login_url='login')
+def view_file(request, pk, type):
+    print(pk,type)
+    return redirect('index')

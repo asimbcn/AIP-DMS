@@ -10,10 +10,15 @@
             >
           </li>
         </ul>
-        <!-- <div class="search-wrapper">
+        {%if search %}
+        <form action="{% url 'search' %}" method="POST">
+          {%csrf_token%}
+          <div class="search-wrapper">
           <i class="material-icons">search</i>
-          <input type="search" name="Search" placeholder="Search" />
-        </div> -->
+          <input type="search" class="submit_on_enter" name="search" placeholder="Search" />
+        </div>
+      </form>
+        {%endif%}
         <ul class="right">
           <li>
             <a href="#!"
@@ -87,8 +92,8 @@
     <li {% if shared %}class="active" {%endif%}>
       <a href="{% url 'shared' %}"><i class="material-icons">people</i>Shared with me</a>
     </li>
-    <li {% if recent %}class="active" {%endif%}>
-      <a href="#"><i class="material-icons">access_time</i>Recent</a>
+    <li {% if search %}class="active" {%endif%}>
+      <a href="{%url 'search'%}"><i class="material-icons">access_time</i>Search</a>
     </li>
     <!-- <li>
       <a href="#"><i class="material-icons">camera</i>Google Photos</a>

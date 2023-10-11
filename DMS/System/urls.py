@@ -7,6 +7,8 @@ urlpatterns = [
     path("upload/", views.upload_files, name="upload"),
     path("edit", views.edit_profile, name="edit"),
     path("statistics/", views.stats, name="stats"),
+    path("search/", views.search, name="search"),
+    path("file/<str:pk>/<str:type>", views.view_file, name="view"),
 ] 
 
 

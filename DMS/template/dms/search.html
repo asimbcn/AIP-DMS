@@ -1,6 +1,6 @@
 {% extends  'dms/section/main.html'%}
 {% load static %}
-{% block title %}Homepage - DMS{% endblock %}
+{% block title %}Search - DMS{% endblock %}
 {%block css%}
 <style>
   /* Tooltip container */
@@ -40,18 +40,18 @@
 {% block content %}
     <div class="main">
       <div class="container-fluid">
-        <p class="subheader">Files Uploaded by {{request.user}} </p>
+        <p class="subheader">Files</p>
 
         <!-- add code for files and ver control not only ver control -->
         {% if data %}
         {% for d in data %}
         
         <div class="card-panel folder">
-          <a href="{% url 'view' pk=d.id type='file' %}">
+          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">folder</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
-            onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}} 
+            onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
            </a> <span class="tooltiptext">Version : {{d.version}}</span>
           </div>         
         </div>
@@ -61,7 +61,7 @@
         {% if data1 %}
         {% for d in data1 %}
         <div class="card-panel folder">
-          <a href="{% url 'view' pk=d.prev_version.id type='version' %}" >
+          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">folder</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
@@ -78,3 +78,18 @@
     </div>
 
     {% endblock %}
+    {% block script %}
+    <script>
+    $(document).ready(function() {
+
+      $('.submit_on_enter').keydown(function(event) {
+        // enter has keyCode = 13, change it if you want to use another button
+        if (event.keyCode == 13) {
+          this.form.submit();
+          return false;
+        }
+      });
+    
+    });
+  </script>
+    {%endblock%}
