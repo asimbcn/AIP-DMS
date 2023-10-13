@@ -173,4 +173,4 @@ def search(request):
 @login_required(login_url='login')
 def view_file(request, pk, type):
     print(pk,type)
-    return redirect('index')
+    return redirect('index')    
