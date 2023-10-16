@@ -6,6 +6,8 @@ from Users.models import *
 from .utils import clean_name, check_file_version, file_type, file_is_valid, check_prev_version
 from django.db.models import Q
 from django.contrib import messages
+from Users.utils import *
+from django.contrib.auth import password_validation
 
 # Create your views here.
 
@@ -125,19 +127,45 @@ def upload_files(request):
 
 @login_required(login_url='login')
 def edit_profile(request):
-    if request.method == 'POST':
-        try:
-            print(request.FILES['file'])
-        except Exception as e:
-            print(e)
     profile = UserInfo.objects.get(user=request.user)
+    info_save = False
+
+    if request.method == 'POST':
+        if request.user.check_password(request.POST['curr_pass']) == True:
+            if 'file' in request.FILES:
+                files = request.FILES['file']
+                profile.image = files
+                info_save = True
+            else:
+                pass
+
+            if request.POST['pass'] != "" and request.POST['pass1'] != "":
+                try:
+                    password_validation.validate_password(request.POST['pass'], None)
+                    
+                    if request.POST['pass'] == request.POST['pass1']:
+                        request.user.set_password(request.POST['pass'])
+                        request.user.save()
+                    else:
+                        messages.error(request,'Passwords do not match!') 
+
+                except Exception as e:
+                    messages.error(request, ', '.join(e))  
+                    return redirect('edit')      
+
+            if info_save == True:
+                profile.save()
+        else:
+            messages.error(request,'Current password is incorrect!')
+
+        return redirect('edit')        
+    
     context = {'edit_user':'edit_user', 'data':profile}
     return render(request, 'dms/edit_profile.html', context)
 
 @login_required(login_url='login')
 def stats(request):
     if request.user.is_staff == True:
-
         return HttpResponse('Stats')
     else:
         return HttpResponse('Not permitted')

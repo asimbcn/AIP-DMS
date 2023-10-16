@@ -36,7 +36,7 @@
                 <div class="col-12 col-sm-auto mb-3">
                   <div class="mx-auto" style="width: 140px;">
                     <div class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
-                      <img id="profile_image" src="{{data.image.url}}" style="height: 140px;">
+                      <img id="profile_image" src="{{data.image.url}}" style="height: 140px; width: 140px;">
                     </div>
                   </div>
                 </div>
@@ -44,6 +44,11 @@
                   <div class="text-center text-sm-left mb-2 mb-sm-0">
                     <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{data.name}}</h4>
                     <p class="mb-0">@{{request.user.username}}</p>
+                    {% if messages %}
+                    {%for message in messages %}
+                    <div style="color:red">{{message}}</div>
+                    {%endfor%}
+                    {%endif%}
                     <div class="text-muted"><small>Last seen {{request.user.last_login | timesince}} ago</small></div>
                     <div class="mt-2">
                       <form action="{% url 'edit'%}" id="form" method="post" enctype="multipart/form-data">
