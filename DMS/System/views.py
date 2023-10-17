@@ -16,6 +16,7 @@ def index(request):
     user = UserInfo.objects.get(user=request.user)
     files = Files.objects.filter(uploaded_by=request.user, new_version=False)
     new_ver = Version_control.objects.filter(uploaded_by=request.user, new_version=False)
+    context = {'index':'index','user':user}
 
     #show all prev version in front end
 
@@ -200,5 +201,19 @@ def search(request):
 
 @login_required(login_url='login')
 def view_file(request, pk, type):
+    profile = UserInfo.objects.get(user=request.user)
+    if type == "version":
+        get_data = Version_control.objects.get(pk=pk)
+        org_file = get_data.org_name
+        data1 = Version_control.objects.filter(org_name=org_file)
+        data = Files.objects.filter(org_name=org_file)
+    if type == "file":
+        data = Files.objects.filter(pk=pk)
+        org_file = data[0].org_name
+        data1 = False
+
+
+
     print(pk,type)
-    return redirect('index')    
+    context = {'user':profile,'file_name':org_file,'data':data,'data1':data1}
+    return render(request, 'dms/file_list.html', context)
