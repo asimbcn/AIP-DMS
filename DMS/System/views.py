@@ -167,7 +167,7 @@ def edit_profile(request):
 @login_required(login_url='login')
 def stats(request):
     if request.user.is_staff == True:
-        return HttpResponse('Stats')
+        return render(request, 'dms/statistics/statistics.html')
     else:
         return HttpResponse('Not permitted')
     
@@ -212,8 +212,5 @@ def view_file(request, pk, type):
         org_file = data[0].org_name
         data1 = False
 
-
-
-    print(pk,type)
     context = {'user':profile,'file_name':org_file,'data':data,'data1':data1}
     return render(request, 'dms/file_list.html', context)
