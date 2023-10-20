@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.contrib import messages
 from Users.utils import *
 from django.contrib.auth import password_validation
+from django.db.models.functions import Extract
 
 # Create your views here.
 
@@ -167,7 +168,26 @@ def edit_profile(request):
 @login_required(login_url='login')
 def stats(request):
     if request.user.is_staff == True:
-        return render(request, 'dms/statistics/statistics.html')
+        active_users = UserInfo.objects.filter(active=True).count()
+        inactive_users = UserInfo.objects.filter(active=False).count()
+
+        files = Files.objects.all().count()
+        vc = Version_control.objects.all().count()
+
+        all = Files.objects.filter(group = 'all').count() + Version_control.objects.filter(group = 'all').count()
+        manage = Files.objects.filter(group = 'management').count() + Version_control.objects.filter(group = 'management').count()
+        account = Files.objects.filter(group = 'accounting').count() + Version_control.objects.filter(group = 'accounting').count()
+        sales = Files.objects.filter(group = 'sales').count() + Version_control.objects.filter(group = 'sales').count()
+        tech = Files.objects.filter(group = 'tech').count() + Version_control.objects.filter(group = 'tech').count()
+
+        # filestime = Files.objects.all().values('created_at').annotate(date_only=Extract('created_at', 'month'))
+        # vctime = Version_control.objects.all().values('created_at').annotate(date_only=Extract('created_at', 'month'))
+            
+        
+        context = {'active_users':active_users,'inactive_users':inactive_users,'total':files+vc,'files':files,'vc':vc,
+                   'total_dept':all+manage+account+sales+tech,'all':all,'manage':manage,
+                   'account':account,'sales':sales,'tech':tech}
+        return render(request, 'dms/statistics/statistics.html', context)
     else:
         return HttpResponse('Not permitted')
     

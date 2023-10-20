@@ -13,7 +13,7 @@ class UserInfo(models.Model):
                                 blank=True)
     name = models.CharField(max_length=200, null=True)
     email = models.EmailField(max_length=200,null=True)
-    image = models.ImageField(null=True, upload_to='profile_pics/')
+    image = models.ImageField(null=True, upload_to='profile_pics/', blank=True)
     active = models.BooleanField(default=True)
     priv_level = models.IntegerField(default=3)
     group = models.CharField(max_length=100,
