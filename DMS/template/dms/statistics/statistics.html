@@ -23,13 +23,13 @@
         <canvas id="myChart"></canvas>
       </div>
       <div class="col-3 sep">
-        <canvas id="myChart1"></canvas>
+        <a href="{% url 'user_info'%}"><canvas id="myChart1"></canvas></a>
       </div>
       <div class="col-5 sep">
         <canvas id="myChart2"></canvas>
       </div>
       <div class="col-3 sep">
-       <a href="{% url 'logs'%}" target="_blank"> <canvas id="myChart3"></canvas></a>
+       <a href="{% url 'logs'%}"><canvas id="myChart3"></canvas></a>
       </div>
     </div>
     </div>
@@ -92,16 +92,16 @@
         new Chart(ctx3, {
           type: 'doughnut',
           data: {
-            labels: ['Security Alert','Incident','Safe', 'Warning'],
+            labels: ['Security Alert','Incident','Warning', 'Information'],
             datasets: [{
               label: 'Security Alerts',
-              data: [0,2,200,20],
+              data: [0,JSON.parse("{{ incident|escapejs }}"),JSON.parse("{{ warning|escapejs }}"),JSON.parse("{{ info|escapejs }}"),],
               borderWidth: 1,
               backgroundColor: [
                 'white',
       'red',
-      'green',
       'yellow',
+      'green',
     ],
             }]
             

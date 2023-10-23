@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/sec/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/sec/style.css' %}">
 
-    <title>Security Logs</title>
+    <title>User Information</title>
   </head>
   <body>
   
@@ -16,7 +16,14 @@
   <div class="content">
     
     <div class="container">
-      <h2 class="mb-5"><a href="{% url 'add_logs'%}" style="color:black; text-decoration: none;">Security Logs</a></h2>
+      {%if messages%}
+      {%for message in messages%}
+      <h2 class="mb-5">{{message}}</h2>
+      {%endfor%}
+      {% else %}
+      <h2 class="mb-5">User Information</h2>
+      {%endif%}
+      
       
 
       <div class="table-responsive custom-table-responsive">
@@ -24,10 +31,10 @@
         <table class="table custom-table">
           <thead>
             <tr>              
-              <th scope="col">Action Time</th>
-              <th scope="col">User</th>
-              <th scope="col">Action</th>
-              <th scope="col">Level</th>
+              <th scope="col">Name</th>
+              <th scope="col">Username</th>
+              <th scope="col">Last Login</th>
+              <th scope="col">Status</th>
               <th scope="col">Message</th>
             </tr>
           </thead>
@@ -36,28 +43,28 @@
             {% for d in data%}
             <tr scope="row">
               <td>
-                {{d.action_time}}
+                {{d.name}}
               </td>
-              <td><a href="#">{{d.User}}</a></td>
+              <td><a href="#">{{d.user}}</a></td>
+              <td>{{d.user.last_login | timesince}} ago</td>
+                {%if d.active == True %}
+                <td>
+                  <a href="{% url 'change_status' d.pk %}" style="color:green;">
+                Active
+              </a>
+              </td>
+                {%else%}
               <td>
-                {{d.Action}}
-                {% if d.level == 0 %}
-                <small class="d-block" style="color:red">Critical</small>
-                {%endif%}
-                {% if d.level == 1 %}
-                <small class="d-block" style="color:orange">Warning</small>
-                {%endif%}
-                {% if d.level == 2 %}
-                <small class="d-block" style="color:green">Information</small>
+                <a href="{% url 'change_status' d.pk %}" style="color:red; text-decoration: none;">
+                Not Active
+              </a>
+              </td>
                 {%endif%}
               </td>
-              <td>{{d.level}}</td>
-              <td>{{d.message}}</td>
+              <td>{{d.remarks}}</td>
             </tr>
             {%endfor%}
             {%endif%}
-            
-            
           </tbody>
         </table>
       </div>

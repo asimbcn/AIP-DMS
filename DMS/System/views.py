@@ -180,13 +180,17 @@ def stats(request):
         sales = Files.objects.filter(group = 'sales').count() + Version_control.objects.filter(group = 'sales').count()
         tech = Files.objects.filter(group = 'tech').count() + Version_control.objects.filter(group = 'tech').count()
 
+        incident = Security_logs.objects.filter(level='0').count()
+        warning = Security_logs.objects.filter(level='1').count()
+        info = Security_logs.objects.filter(level='2').count()
+
         # filestime = Files.objects.all().values('created_at').annotate(date_only=Extract('created_at', 'month'))
         # vctime = Version_control.objects.all().values('created_at').annotate(date_only=Extract('created_at', 'month'))
             
         
         context = {'active_users':active_users,'inactive_users':inactive_users,'total':files+vc,'files':files,'vc':vc,
                    'total_dept':all+manage+account+sales+tech,'all':all,'manage':manage,
-                   'account':account,'sales':sales,'tech':tech}
+                   'account':account,'sales':sales,'tech':tech,'incident':incident, 'warning':warning, 'info':info}
         return render(request, 'dms/statistics/statistics.html', context)
     else:
         return HttpResponse('Not permitted')
@@ -240,3 +244,41 @@ def sec_log(request):
     logs = Security_logs.objects.all()
     context = {'data':logs}
     return render(request, 'dms/statistics/security.html', context)
+
+@login_required(login_url='login')
+def user_info(request):
+    info = UserInfo.objects.all()
+    context = {'data':info}
+    return render(request, 'dms/statistics/user_info.html', context)
+
+@login_required(login_url='login')
+def add_logs(request):
+    if request.method == 'POST':
+        user = User.objects.get(username='root')
+        try:
+            logs = Security_logs.objects.create(User=user, Action=request.POST['action'], level=request.POST['level'],  message=request.POST['message'])
+            logs.save()
+            return redirect('logs')
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Please try again later')
+            return redirect('add_logs')
+           
+    return render(request, 'dms/statistics/add_logs.html')
+
+@login_required(login_url='login')
+def change_status(request,pk):
+    user = UserInfo.objects.get(pk=pk)
+    if user.active == True:
+        user.active = False
+    else:
+        user.active = True
+
+    try:
+        user.save()
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Changes cannot be made, Please try again later')
+        
+    return redirect('user_info')
+

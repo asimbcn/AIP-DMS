@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+{%if messages%}
+{%for message in messages%}
+<h3>{{message}}</h3>
+{%endfor%}
+{% else %}
+<h3>Add Logs</h3>
+{%endif%}
+
+<div class="container">
+  <form action="{% url 'add_logs' %}" method="post">
+    {% csrf_token %}
+
+    <label for="action">Action</label>
+    <input type="text" id="action" name="action" placeholder="action">
+
+    <label for="level">Level</label>
+    <select id="level" name="level">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+
+    <label for="message">Message</label>
+    <input type="text" id="message" name="message" placeholder="message">
+
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+</body>
+</html>

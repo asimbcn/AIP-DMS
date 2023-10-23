@@ -19,6 +19,7 @@ class UserInfo(models.Model):
     group = models.CharField(max_length=100,
                              default='tech',
                              choices=groupchoices.choices)
+    remarks = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.name

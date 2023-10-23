@@ -16,8 +16,13 @@ def user_login(request):
         user = authenticate(username=request.POST['username'],
                             password=request.POST['password'])
         if user is not None:
-            login(request, user)
-            return redirect('redir')
+            check = UserInfo.objects.get(user=user)
+            if check.active == True:    
+                login(request, user)
+                return redirect('redir')
+            else:
+                messages.error(request, 'Your account has been deactivated, Please Contact Admininstrator')
+                return redirect('login')
         else:
             messages.error(request, 'Invalid username or password')
 
