@@ -282,3 +282,15 @@ def change_status(request,pk):
         
     return redirect('user_info')
 
+@login_required(login_url='login')
+def download(request,pk,type):
+    if type == "version":
+        data = Version_control.objects.get(pk=pk)
+        name = data.prev_version.name
+    if type == "file":
+        data = Files.objects.get(pk=pk)
+        name = data.name
+
+    response = HttpResponse(data, content_type=f"text/{data.extension}")
+    response['Content-Disposition'] = f"attachment; filename={name}.{data.extension}"
+    return response 

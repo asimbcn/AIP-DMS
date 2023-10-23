@@ -51,6 +51,7 @@
       </div>
       <div class="nav-wrapper nav-2">
         <ul>
+          {% if user.group != "restricted" %}
           <li>
             <a
               href="{% url 'upload' %}"
@@ -58,6 +59,7 @@
               >New</a
             >
           </li>
+          {% endif %}
         </ul>
         <ul class="right">
           <!-- <li>
@@ -94,12 +96,22 @@
     <!-- <li>
       <a href="#"><i class="material-icons">devices</i>Computers</a>
     </li> -->
+    {% if user.group == "restricted" %}
+    <li>
+      <a><i class="material-icons">people</i>Shared with me</a>
+    </li>
+    <li>
+      <a><i class="material-icons">access_time</i>Search</a>
+    </li>
+    {%else%}
     <li {% if shared %}class="active" {%endif%}>
       <a href="{% url 'shared' %}"><i class="material-icons">people</i>Shared with me</a>
     </li>
     <li {% if search %}class="active" {%endif%}>
       <a href="{%url 'search'%}"><i class="material-icons">access_time</i>Search</a>
     </li>
+    {%endif%}
+    
     <!-- <li>
       <a href="#"><i class="material-icons">camera</i>Google Photos</a>
     </li>

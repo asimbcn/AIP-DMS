@@ -6,7 +6,7 @@ CURRENT_DATE = datetime.now()
 
 # Create your models here.
 class UserInfo(models.Model):
-    groupchoices = models.TextChoices('groupchoices', 'management accounting sales tech')
+    groupchoices = models.TextChoices('groupchoices', 'management accounting sales tech restricted')
     user = models.OneToOneField(User, 
                                 on_delete=models.CASCADE,
                                 null=True, 
@@ -17,7 +17,7 @@ class UserInfo(models.Model):
     active = models.BooleanField(default=True)
     priv_level = models.IntegerField(default=3)
     group = models.CharField(max_length=100,
-                             default='tech',
+                             default='restricted',
                              choices=groupchoices.choices)
     remarks = models.CharField(max_length=200, null=True, blank=True)
 

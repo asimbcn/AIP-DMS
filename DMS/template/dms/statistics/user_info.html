@@ -33,6 +33,7 @@
             <tr>              
               <th scope="col">Name</th>
               <th scope="col">Username</th>
+              <th scope="col">Group</th>
               <th scope="col">Last Login</th>
               <th scope="col">Status</th>
               <th scope="col">Message</th>
@@ -46,6 +47,14 @@
                 {{d.name}}
               </td>
               <td><a href="#">{{d.user}}</a></td>
+              <td>
+                {%if d.group == "restricted"%}
+                <a style="color: orange;">{{d.group}}</a>
+                {%else%}
+                {{d.group}}
+                {%endif%}
+                
+              </td>
               <td>{{d.user.last_login | timesince}} ago</td>
                 {%if d.active == True %}
                 <td>

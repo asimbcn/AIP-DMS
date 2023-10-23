@@ -54,7 +54,7 @@ width: 130px;
         {% for d in data %}
         
         <div class="card-panel folder">
-          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+          <a href="{% url 'download' pk=d.id type='file' %}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">cloud_download</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
@@ -68,7 +68,7 @@ width: 130px;
         {% if data1 %}
         {% for d in data1 %}
         <div class="card-panel folder">
-          <a href="{{d.fileURL}}" download="{{d.org_name}}.{{d.extension}}">
+          <a href="{% url 'download' pk=d.id type='version' %}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">cloud_download</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"

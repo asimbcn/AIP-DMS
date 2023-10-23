@@ -13,6 +13,7 @@ urlpatterns = [
     path("user_info/", views.user_info, name="user_info"),
     path("change_status/<str:pk>", views.change_status, name="change_status"),
     path("file/<str:pk>/<str:type>", views.view_file, name="view"),
+    path("download/<str:pk>/<str:type>", views.download, name="download"),
 ] 
 
 
