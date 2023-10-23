@@ -33,6 +33,13 @@
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  .short{
+    overflow: hidden;
+white-space: nowrap; /* Don't forget this one */
+text-overflow: ellipsis;
+width: 130px;
+  }
   </style>
   
 {%endblock%}
@@ -51,7 +58,7 @@
             <i class=" material-icons left">cloud_download</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
-            onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
+            onMouseOut="this.style.color='black'"><div class="short">{{d.org_name}}.{{d.extension}}</div> 
            </a> <span class="tooltiptext">Version : {{d.version}}</span>
           </div>         
         </div>
@@ -65,7 +72,7 @@
             <i class=" material-icons left">cloud_download</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
-            onMouseOut="this.style.color='black'">{{d.org_name}}.{{d.extension}}
+            onMouseOut="this.style.color='black'"><div class="short">{{d.org_name}}.{{d.extension}}</div> 
            </a> <span class="tooltiptext">Version : {{d.version}}</span>
           </div>         
         </div>
