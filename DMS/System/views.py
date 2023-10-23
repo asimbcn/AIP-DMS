@@ -9,7 +9,6 @@ from django.contrib import messages
 from Users.utils import *
 from django.contrib.auth import password_validation
 from django.db.models.functions import Extract
-
 # Create your views here.
 
 @login_required(login_url='login')
@@ -167,7 +166,8 @@ def edit_profile(request):
 
 @login_required(login_url='login')
 def stats(request):
-    if request.user.is_staff == True:
+    profile = UserInfo.objects.get(user=request.user)
+    if request.user.is_staff == True or profile.group =='management':
         active_users = UserInfo.objects.filter(active=True).count()
         inactive_users = UserInfo.objects.filter(active=False).count()
 
@@ -234,3 +234,9 @@ def view_file(request, pk, type):
 
     context = {'user':profile,'file_name':org_file,'data':data,'data1':data1}
     return render(request, 'dms/file_list.html', context)
+
+@login_required(login_url='login')
+def sec_log(request):
+    logs = Security_logs.objects.all()
+    context = {'data':logs}
+    return render(request, 'dms/statistics/security.html', context)

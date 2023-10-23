@@ -29,7 +29,7 @@
         <canvas id="myChart2"></canvas>
       </div>
       <div class="col-3 sep">
-        <canvas id="myChart3"></canvas>
+       <a href="{% url 'logs'%}" target="_blank"> <canvas id="myChart3"></canvas></a>
       </div>
     </div>
     </div>
@@ -92,15 +92,16 @@
         new Chart(ctx3, {
           type: 'doughnut',
           data: {
-            labels: ['Security Alert','Incident','Safe'],
+            labels: ['Security Alert','Incident','Safe', 'Warning'],
             datasets: [{
               label: 'Security Alerts',
-              data: [0,0,1],
+              data: [0,2,200,20],
               borderWidth: 1,
               backgroundColor: [
                 'white',
       'red',
       'green',
+      'yellow',
     ],
             }]
             

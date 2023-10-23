@@ -1,0 +1,71 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head></head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/sec/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sec/style.css' %}">
+
+    <title>Table #5</title>
+  </head>
+  <body>
+  
+
+  <div class="content">
+    
+    <div class="container">
+      <h2 class="mb-5">Security Logs</h2>
+      
+
+      <div class="table-responsive custom-table-responsive">
+
+        <table class="table custom-table">
+          <thead>
+            <tr>              
+              <th scope="col">Action Time</th>
+              <th scope="col">User</th>
+              <th scope="col">Action</th>
+              <th scope="col">Level</th>
+              <th scope="col">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if data %}
+            {% for d in data%}
+            <tr scope="row">
+              <td>
+                {{d.action_time}}
+              </td>
+              <td><a href="#">{{d.User}}</a></td>
+              <td>
+                {{d.Action}}
+                {% if d.level == 0 %}
+                <small class="d-block" style="color:red">Critical</small>
+                {%endif%}
+                {% if d.level == 1 %}
+                <small class="d-block" style="color:orange">Warning</small>
+                {%endif%}
+                {% if d.level == 2 %}
+                <small class="d-block" style="color:green">Information</small>
+                {%endif%}
+              </td>
+              <td>{{d.level}}</td>
+              <td>{{d.message}}</td>
+            </tr>
+            {%endfor%}
+            {%endif%}
+            
+            
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  </body>
+</html>
