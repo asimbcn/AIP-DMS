@@ -49,7 +49,16 @@
               <td><a href="#">{{d.user}}</a></td>
               <td>
                 {%if d.group == "restricted"%}
-                <a style="color: orange;">{{d.group}}</a>
+                <form action="{% url 'restrict' d.pk %}" method="post">
+                  {%csrf_token%}
+                <select name="myselect" id="myselect" onchange="this.form.submit()">
+                  <option value="restricted">restricted</option>
+                  <option value="management">management</option>
+                  <option value="accounting">accounting</option>
+                  <option value="sales">sales</option>
+                  <option value="tech">tech</option> 
+                </select>
+                </form>
                 {%else%}
                 {{d.group}}
                 {%endif%}
@@ -58,19 +67,29 @@
               <td>{{d.user.last_login | timesince}} ago</td>
                 {%if d.active == True %}
                 <td>
-                  <a href="{% url 'change_status' d.pk %}" style="color:green;">
+                  <a style="color:green;" >
                 Active
               </a>
               </td>
                 {%else%}
               <td>
-                <a href="{% url 'change_status' d.pk %}" style="color:red; text-decoration: none;">
+                <a href="{% url 'change_status' pk=d.pk reason='test' %}" style="color:red; text-decoration: none;">
                 Not Active
               </a>
               </td>
                 {%endif%}
               </td>
-              <td>{{d.remarks}}</td>
+              <td>
+                {%if d.remarks == "Active" or d.remarks == None%}
+                <form action="{% url 'active_change' d.pk %}" method="post">
+                  {%csrf_token%}
+                  <input type="text" name="reason" placeholder="Remarks for status change">
+                </form>
+                {%elif d.active == False %}
+                {{d.remarks}}
+                {%endif%}
+                               
+              </td>
             </tr>
             {%endfor%}
             {%endif%}
@@ -84,4 +103,13 @@
   </div>
 
   </body>
+    <script>
+      $(document).on("keypress", "form", function(event) {
+         if (event.keyCode === 13) {
+            event.preventDefault();
+            alert("You have successfully submitted the form!");
+            $(this).submit();
+         }
+      });
+   </script>
 </html>

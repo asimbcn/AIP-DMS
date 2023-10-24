@@ -267,11 +267,14 @@ def add_logs(request):
     return render(request, 'dms/statistics/add_logs.html')
 
 @login_required(login_url='login')
-def change_status(request,pk):
+def change_status(request,pk, reason=None):
     user = UserInfo.objects.get(pk=pk)
     if user.active == True:
+        if reason != None or reason != 'test':
+            user.remarks = reason
         user.active = False
     else:
+        user.remarks = "Active"
         user.active = True
 
     try:
@@ -294,3 +297,20 @@ def download(request,pk,type):
     response = HttpResponse(data, content_type=f"text/{data.extension}")
     response['Content-Disposition'] = f"attachment; filename={name}.{data.extension}"
     return response 
+
+@login_required(login_url='login')
+def restrict(request,pk):
+    if request.method == "POST":
+        user = UserInfo.objects.get(pk=pk)
+        option = request.POST['myselect']
+        user.group = option
+        try:
+            user.save()
+        except Exception as e:
+            messages.error(request, 'Changes cannot be made, Please try again later')  
+
+    return redirect('user_info')
+
+@login_required(login_url='login')
+def active_change(request,pk):
+    return redirect('change_status', pk=pk, reason=request.POST['reason'])

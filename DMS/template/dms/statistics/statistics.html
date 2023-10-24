@@ -8,27 +8,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
-      .sep{
-        margin: 5px;
+     .sep{
+        margin: 10px;
       }
     </style>
 </head>
 <body>
   <div class="container">
     <div class="col">
-      <a href="{% url 'admin:index' %}" style="all: none; margin-top: 20px; flex-;" type="button" class="btn btn-outline-primary">Back</a>
+      <a href="{% url 'admin:index' %}" style="all: none; margin-top: 20px;" type="button" class="btn btn-outline-primary">Back</a>
       </div>
     <div class="row">
-      <div class="col-5 sep">
+      <div class="col-6 sep">
         <canvas id="myChart"></canvas>
       </div>
-      <div class="col-3 sep">
+      <div class="col-4 sep">
         <a href="{% url 'user_info'%}"><canvas id="myChart1"></canvas></a>
       </div>
-      <div class="col-5 sep">
+      <div class="col-6 sep">
         <canvas id="myChart2"></canvas>
       </div>
-      <div class="col-3 sep">
+      <div class="col-4 sep">
        <a href="{% url 'logs'%}"><canvas id="myChart3"></canvas></a>
       </div>
     </div>
