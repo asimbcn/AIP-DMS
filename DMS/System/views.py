@@ -92,9 +92,9 @@ def upload_files(request):
 
                     vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
                     vc1.pre_ver_control = version_ctrl
-                    if type == "pdf":
-                        text = extract_text_from_pdf(vc1.file.path)
-                        vc1.file_content = text
+    
+                    text = extract_text_from_pdf(vc1.file.path, type)
+                    vc1.file_content = text
                     vc1.save()
 
                     return redirect('index')
@@ -111,9 +111,8 @@ def upload_files(request):
 
                         vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
                         vc1.pre_ver_control = vc1
-                        if type == "pdf":
-                            text = extract_text_from_pdf(vc1.file.path)
-                            vc1.file_content = text
+                        text = extract_text_from_pdf(vc1.file.path, type)
+                        vc1.file_content = text
                         vc1.save()
 
                         return redirect('index')
@@ -133,10 +132,9 @@ def upload_files(request):
                                                 uploaded_by=request.user,
                                                 group=group)
                     file.save()
-                    if type == "pdf":
-                        text = extract_text_from_pdf(file.file.path)
-                        file.file_content = text
-                        file.save()
+                    text = extract_text_from_pdf(file.file.path, type)
+                    file.file_content = text
+                    file.save()
                     return redirect('index')
                 except Exception as e:
                     print(e)

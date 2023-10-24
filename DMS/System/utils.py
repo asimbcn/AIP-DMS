@@ -4,6 +4,7 @@ import re
 import io
 import pytesseract
 from pdf2image import convert_from_path
+from PIL import Image
 
 def file_type(request):
     file = request.FILES['file']
@@ -12,7 +13,7 @@ def file_type(request):
     return  file_name, file_type
 
 def file_is_valid(file_ext):
-    valid_file_ext = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'jpg', 'jpeg', 'png', 'bmp']
+    valid_file_ext = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'jpg', 'jpeg', 'png']
     if file_ext.lower() in valid_file_ext:
         return True
     else:
@@ -39,17 +40,21 @@ def clean_name(name):
     name = re.sub("[()_-]"," ",name)
     return name
 
-def extract_text_from_pdf(pdf_path):
-
+def extract_text_from_pdf(pdf_path, type):
+    pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe' 
     try:
-        pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe' 
-
-        pages = convert_from_path(pdf_path, 500, poppler_path=r'C:/Proppler/Library/bin')
-        text_data = ''
-        for page in pages:
-            text = pytesseract.image_to_string(page)
-            text_data += text + '\n'
-        return text_data.split()
+        if type == "pdf":
+            pages = convert_from_path(pdf_path, 500, poppler_path=r'C:/Proppler/Library/bin')
+            text_data = ''
+            for page in pages:
+                text = pytesseract.image_to_string(page)
+                text_data += text + '\n'
+            return text_data.split()
+        if type == "jpg" or type == "jpeg" or type == "png":
+            img = Image.open(pdf_path)
+            # Perform OCR using PyTesseract
+            text = pytesseract.image_to_string(img)  
+            return text.split() 
     except Exception as e:
         print(e)
         return ''
