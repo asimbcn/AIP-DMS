@@ -1,6 +1,9 @@
 from .views import *
 from .models import *
 import re
+import io
+import pytesseract
+from pdf2image import convert_from_path
 
 def file_type(request):
     file = request.FILES['file']
@@ -35,3 +38,26 @@ def check_prev_version(org_name,type):
 def clean_name(name):
     name = re.sub("[()_-]"," ",name)
     return name
+
+def extract_text_from_pdf(pdf_path):
+
+    try:
+        pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe' 
+
+        pages = convert_from_path(pdf_path, 500, poppler_path=r'C:/Proppler/Library/bin')
+        text_data = ''
+        for page in pages:
+            text = pytesseract.image_to_string(page)
+            text_data += text + '\n'
+        return text_data.split()
+    except Exception as e:
+        print(e)
+        return ''
+    
+
+def check_user_status(request):
+    user = UserInfo.objects.get(user=request.user)
+    if user.active == True:
+        return True
+    else:
+        return False

@@ -3,16 +3,23 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import *
 from Users.models import *
-from .utils import clean_name, check_file_version, file_type, file_is_valid, check_prev_version
+from .utils import clean_name, check_file_version, file_type, file_is_valid, check_prev_version, extract_text_from_pdf,check_user_status
 from django.db.models import Q
 from django.contrib import messages
 from Users.utils import *
 from django.contrib.auth import password_validation
 from django.db.models.functions import Extract
+# from pypdf import PdfReader
+import re
 # Create your views here.
+
 
 @login_required(login_url='login')
 def index(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+
     user = UserInfo.objects.get(user=request.user)
     files = Files.objects.filter(uploaded_by=request.user, new_version=False)
     new_ver = Version_control.objects.filter(uploaded_by=request.user, new_version=False)
@@ -31,6 +38,10 @@ def index(request):
 
 @login_required(login_url='login')
 def for_me(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+
     profile = UserInfo.objects.get(user=request.user)
     files = Files.objects.filter(Q(group=profile.group) | Q(group="all") & Q(new_version=False))
     new_ver = Version_control.objects.filter(Q(group=profile.group) | Q(group="all") & Q(new_version=False))
@@ -42,10 +53,14 @@ def for_me(request):
     if new_ver.count() > 0 and files.count() > 0:
         context = {'data': files, 'data1': new_ver, 'shared':'shared', 'user':profile}
 
-    return render(request, 'dms/with_me.html', context)
+    return render(request, 'dms/with_me.html', context) 
 
 @login_required(login_url='login')
 def upload_files(request):
+
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
 
     if request.method == 'POST':
         try:
@@ -60,6 +75,7 @@ def upload_files(request):
 
         if file_is_valid(type):
             if check_file_version(org_name, type):
+                pass
                 if check_prev_version(org_name, type):
                     file1 = file1 = Files.objects.get(name=name, extension=type)
                     version_ctrl = Version_control.objects.get(org_name=org_name, prev_version=file1, new_version=False)
@@ -76,6 +92,9 @@ def upload_files(request):
 
                     vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
                     vc1.pre_ver_control = version_ctrl
+                    if type == "pdf":
+                        text = extract_text_from_pdf(vc1.file.path)
+                        vc1.file_content = text
                     vc1.save()
 
                     return redirect('index')
@@ -92,6 +111,9 @@ def upload_files(request):
 
                         vc1 = Version_control.objects.get(org_name=org_name, prev_version=file1, version=version)
                         vc1.pre_ver_control = vc1
+                        if type == "pdf":
+                            text = extract_text_from_pdf(vc1.file.path)
+                            vc1.file_content = text
                         vc1.save()
 
                         return redirect('index')
@@ -111,8 +133,13 @@ def upload_files(request):
                                                 uploaded_by=request.user,
                                                 group=group)
                     file.save()
+                    if type == "pdf":
+                        text = extract_text_from_pdf(file.file.path)
+                        file.file_content = text
+                        file.save()
                     return redirect('index')
-                except:
+                except Exception as e:
+                    print(e)
                     messages.error(request, 'File could not be uploaded, Please try again')
                     return redirect('upload')
                     
@@ -128,6 +155,11 @@ def upload_files(request):
 
 @login_required(login_url='login')
 def edit_profile(request):
+
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     profile = UserInfo.objects.get(user=request.user)
     info_save = False
 
@@ -166,6 +198,10 @@ def edit_profile(request):
 
 @login_required(login_url='login')
 def stats(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+
     profile = UserInfo.objects.get(user=request.user)
     if request.user.is_staff == True or profile.group =='management':
         active_users = UserInfo.objects.filter(active=True).count()
@@ -197,14 +233,17 @@ def stats(request):
     
 @login_required(login_url='login')
 def search(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+
     profile = UserInfo.objects.get(user=request.user)
     context= {'search':'search','user':profile}
     
     if request.method == 'POST':
         search = request.POST['search']
-        print(search)
-        files = Files.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search)).filter(Q(group=profile.group) | Q(group="all") | Q(uploaded_by=request.user ))
-        new_ver = Version_control.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search)).filter(Q(group=profile.group) | Q(group="all")| Q(uploaded_by=request.user ))
+        files = Files.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search) | Q(file_content__icontains=search)).filter(Q(group=profile.group) | Q(group="all") | Q(uploaded_by=request.user ))
+        new_ver = Version_control.objects.filter(Q(org_name__icontains=search) | Q(extension__icontains=search) | Q(file_content__icontains=search)).filter(Q(group=profile.group) | Q(group="all")| Q(uploaded_by=request.user ))
 
         # all in one compact file
         
@@ -225,6 +264,10 @@ def search(request):
 
 @login_required(login_url='login')
 def view_file(request, pk, type):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     profile = UserInfo.objects.get(user=request.user)
     if type == "version":
         get_data = Version_control.objects.get(pk=pk)
@@ -241,18 +284,30 @@ def view_file(request, pk, type):
 
 @login_required(login_url='login')
 def sec_log(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     logs = Security_logs.objects.all()
     context = {'data':logs}
     return render(request, 'dms/statistics/security.html', context)
 
 @login_required(login_url='login')
 def user_info(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     info = UserInfo.objects.all()
     context = {'data':info}
     return render(request, 'dms/statistics/user_info.html', context)
 
 @login_required(login_url='login')
 def add_logs(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     if request.method == 'POST':
         user = User.objects.get(username='root')
         try:
@@ -268,6 +323,10 @@ def add_logs(request):
 
 @login_required(login_url='login')
 def change_status(request,pk, reason=None):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     user = UserInfo.objects.get(pk=pk)
     if user.active == True:
         if reason != None or reason != 'test':
@@ -287,6 +346,10 @@ def change_status(request,pk, reason=None):
 
 @login_required(login_url='login')
 def download(request,pk,type):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     if type == "version":
         data = Version_control.objects.get(pk=pk)
         name = data.prev_version.name
@@ -300,6 +363,10 @@ def download(request,pk,type):
 
 @login_required(login_url='login')
 def restrict(request,pk):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     if request.method == "POST":
         user = UserInfo.objects.get(pk=pk)
         option = request.POST['myselect']
@@ -313,4 +380,8 @@ def restrict(request,pk):
 
 @login_required(login_url='login')
 def active_change(request,pk):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
     return redirect('change_status', pk=pk, reason=request.POST['reason'])
