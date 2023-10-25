@@ -57,7 +57,7 @@ width: 130px;
           <a href="{% url 'download' pk=d.id type='file' %}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">cloud_download</i>
           </a>          
-          <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
+          <div class="tooltip"><a href="{% url 'edit_file' pk=d.id type='file' %}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
             onMouseOut="this.style.color='black'"><div class="short">{{d.org_name}}.{{d.extension}}</div> 
            </a> <span class="tooltiptext">Version : {{d.version}}</span>
           </div>         
@@ -71,7 +71,7 @@ width: 130px;
           <a href="{% url 'download' pk=d.id type='version' %}" download="{{d.org_name}}.{{d.extension}}">
             <i class=" material-icons left">cloud_download</i>
           </a>          
-          <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
+          <div class="tooltip"><a href="{% url 'edit_file' pk=d.id type='version' %}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
             onMouseOut="this.style.color='black'"><div class="short">{{d.org_name}}.{{d.extension}}</div> 
            </a> <span class="tooltiptext">Version : {{d.version}}</span>
           </div>         

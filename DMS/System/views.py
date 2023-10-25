@@ -98,6 +98,7 @@ def upload_files(request):
                     vc1.save()
 
                     return redirect('index')
+                
                 else:
                     try:
                         file1 = Files.objects.get(name=name, extension=type)
@@ -383,3 +384,58 @@ def active_change(request,pk):
         return redirect('logout')
     
     return redirect('change_status', pk=pk, reason=request.POST['reason'])
+
+
+@login_required(login_url='login')
+def edit_file(request,pk,type):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
+    if type == "version":
+        data = Version_control.objects.get(pk=pk)
+        select = data.group
+        if data.new_version == False:
+            version_info = "Latest Version"
+            new_ver = False
+        else:
+            version_info = f'{data.version}'
+            new_ver = Version_control.objects.filter(org_name=data.org_name).order_by('-id')[0]  
+           
+        type = "version"
+
+    if type == "file":
+        data = Files.objects.get(pk=pk)
+        select = data.group
+        if data.new_version == False:
+            version_info = "Latest Version"
+            new_ver = False
+        else:
+            version_info = f'{data.version}'
+            new_ver = Version_control.objects.filter(org_name=data.org_name).order_by('-id')[0]   
+
+        type = "file"
+
+    context = {'data':data,'type':type,'version_info':version_info,'new_ver':new_ver,'select':select}
+    return render(request,'dms/edit_file.html',context)
+
+@login_required(login_url='login')
+def change_group(request, pk, type):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
+    if request.method == "POST":
+    
+        if type == "version":
+            data = Version_control.objects.get(pk=pk)
+        if type == "file":
+            data = Files.objects.get(pk=pk)
+
+        data.group = request.POST['myselect']
+        try:
+            data.save()
+        except Exception as e:  
+            messages.error(request, 'Changes cannot be made, Please try again later')
+        
+        return redirect('edit_file', pk=pk, type=type)
