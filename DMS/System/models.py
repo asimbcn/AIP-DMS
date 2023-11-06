@@ -83,3 +83,22 @@ class Security_logs(models.Model):
 
     def __str__(self):
         return self.Action
+    
+
+class Temp_OCR(models.Model):
+    name = models.CharField(max_length=100)
+    file = models.FileField(upload_to='files/OCR/')
+    file_content = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+    
+    @property
+    def fileURL(self):
+        try:
+            url = self.file.url
+        except:
+            url = None
+
+        return url

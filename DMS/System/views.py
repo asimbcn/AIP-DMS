@@ -439,3 +439,35 @@ def change_group(request, pk, type):
             messages.error(request, 'Changes cannot be made, Please try again later')
         
         return redirect('edit_file', pk=pk, type=type)
+    
+
+@login_required(login_url='login')
+def extract_text(request):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
+    context = {}
+    
+    if request.method == "POST":
+        try:
+            file = request.FILES['file'] 
+            name, type = file_type(request)
+            new = Temp_OCR.objects.filter(name=name).first()
+            if new is None:
+                new = Temp_OCR.objects.create(name=name, file=file)
+                new.save()
+                text = extract_text_from_pdf(new.file.path, type)
+                new.file_content = text
+                new.save()
+            else:
+                text = extract_text_from_pdf(new.file.path, type)
+
+            text = ' '.join(text)               
+            context = {'data':text}
+        except Exception as e:
+            print(e)
+            messages.error(request, e)
+            return redirect('extract')
+    
+    return render(request,'dms/extract_text.html',context)

@@ -18,6 +18,7 @@ urlpatterns = [
     path("change_group/<str:pk>/<str:type>", views.change_group, name="change_group"),
     path("download/<str:pk>/<str:type>", views.download, name="download"),
     path("edit_file/<str:pk>/<str:type>", views.edit_file, name="edit_file"),
+    path("extract/", views.extract_text, name="extract"),
 ] 
 
 
