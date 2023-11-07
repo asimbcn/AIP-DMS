@@ -92,6 +92,7 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
                     <div class="section" style="padding-bottom:20px;">
                         <h4 class="title-attr"><small>Group</small></h6>                    
                         <div>
+                            {% if data.uploaded_by == request.user %}
                             <form action="{% url 'change_group' pk=data.id type=type %}" method="post">
                                 {%csrf_token%}
                               <select name="myselect" id="myselect" onchange="this.form.submit()">
@@ -102,6 +103,16 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
                                 <option value="tech" {%if select == 'texh' %}selected{%endif%}>tech</option> 
                               </select>
                               </form>
+                              {% else %}
+                              <select name="myselect" id="myselect" onchange="this.form.submit()" disabled>
+                                <option value="all" {%if select == 'all' %}selected{%endif%}>all</option>
+                                <option value="management" {%if select == 'management' %}selected{%endif%}>management</option>
+                                <option value="accounting" {%if select == 'accounting' %}selected{%endif%}>accounting</option>
+                                <option value="sales" {%if select == 'sales' %}selected{%endif%}>sales</option>
+                                <option value="tech" {%if select == 'texh' %}selected{%endif%}>tech</option> 
+                              </select>
+                              {%endif%}
+
                         </div>
                     </div>                
                     <div class="section" style="padding-bottom:20px;">
