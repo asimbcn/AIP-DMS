@@ -5,6 +5,7 @@ import io
 import pytesseract
 from pdf2image import convert_from_path
 from PIL import Image
+import docx2txt as dt
 
 def file_type(request):
     file = request.FILES['file']
@@ -55,6 +56,9 @@ def extract_text_from_pdf(pdf_path, type):
             # Perform OCR using PyTesseract
             text = pytesseract.image_to_string(img)  
             return text.split() 
+        if type == "doc" or type == "docx":
+            text = dt.process(pdf_path)
+            return text
     except Exception as e:
         print(e)
         return ''
