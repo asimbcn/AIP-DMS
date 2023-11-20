@@ -43,9 +43,10 @@ def for_me(request):
         return redirect('logout')
 
     profile = UserInfo.objects.get(user=request.user)
-    files = Files.objects.filter(Q(group=profile.group) | Q(group="all") & Q(new_version=False))
-    new_ver = Version_control.objects.filter(Q(group=profile.group) | Q(group="all") & Q(new_version=False))
- 
+    files = Files.objects.filter((Q(group=profile.group) | Q(group="all")) & Q(new_version=False))
+    new_ver = Version_control.objects.filter((Q(group=profile.group) | Q(group="all")) & Q(new_version=False))
+
+    print(files,new_ver)
     if files.count() == 0:
         context = {'data1': new_ver, 'shared':'shared','user':profile}
     if new_ver.count() == 0:
@@ -68,6 +69,7 @@ def upload_files(request):
             name, type = file_type(request)
             org_name = clean_name(name)
             group = request.POST['group']
+            print(name, org_name)
         except:
             messages.error(request, 'Please choose a file to upload!')
             return redirect('upload')

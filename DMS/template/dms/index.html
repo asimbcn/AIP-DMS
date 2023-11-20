@@ -68,7 +68,7 @@ width: 130px;
         {% if data1 %}
         {% for d in data1 %}
         <div class="card-panel folder">
-          <a href="{% url 'view' pk=d.prev_version.id type='version' %}" >
+          <a href="{% url 'view' pk=d.id type='version' %}" >
             <i class=" material-icons left">folder</i>
           </a>          
           <div class="tooltip"><a href="{{d.fileURL}}" style="text-decoration: none;color: black; overflow: hidden;" onMouseOver="this.style.color='blue'"
