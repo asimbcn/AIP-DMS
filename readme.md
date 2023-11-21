@@ -82,13 +82,13 @@ venv_name\Scripts\activate  # Activate the virtual environment (for Windows)
 git clone https://github.com/asimbcn/AIP-DMS
 
 # Run server
-refer to the -[Prerequisites](#prerequisites) 'Virtual Environment'
+refer to the -Prerequisites 'Virtual Environment'
 
 # Change into the project directory
 cd your-project
 
 # Install dependencies
-refer to the -[Prerequisites](#prerequisites) '3. Install requirements'
+refer to the -Prerequisites '3. Install requirements'
 
 #run project
 For Windows: py manage.py runserver
