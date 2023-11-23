@@ -121,8 +121,8 @@
           </form>
           {%else%}
           <p>Texts have been extracted</p>
-          <textarea id="textfromdata" hidden>{{data}}</textarea>
-          <button class="btn" id="active"  style="background-color: green;" onclick="copyText()">Copy to clipboard</button>
+          <textarea id="textfromdata" style="width: 400px; height: 70px;">{{data}}</textarea>
+          <!-- <button class="btn" id="active"  style="background-color: green;" onclick="copyText()">Copy to clipboard</button> -->
           {%endif%}
 
           </div>

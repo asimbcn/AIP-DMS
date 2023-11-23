@@ -114,6 +114,18 @@ div.section > div > input {margin:0;padding-left:5px;font-size:10px;padding-righ
                               {%endif%}
 
                         </div>
+                        <br>
+                        <div style="margin-top:10px;">
+                            <h4 class="title-attr" style="margin-right: 5px;">File Lock: </h6> 
+                            {% if data.uploaded_by == request.user %}
+                            <form action="{% url 'change_locked' pk=data.id type=type %}" method="post">
+                                {%csrf_token%}
+                              <input type="checkbox" name="locked_status" id="locked_status" {%if data.locked%}checked{%endif%} onchange="this.form.submit()">
+                              </form>
+                              {% else %}
+                              <input type="checkbox" name="locked_status" id="locked_status" {%if data.locked%}checked{%endif%} disabled>
+                            {%endif%}
+                        </div>
                     </div>                
                     <div class="section" style="padding-bottom:20px;">
                        

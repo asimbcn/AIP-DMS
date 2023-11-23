@@ -81,6 +81,10 @@ def upload_files(request):
                 if check_prev_version(org_name, type):
                     file1 = file1 = Files.objects.get(name=name, extension=type)
                     version_ctrl = Version_control.objects.get(org_name=org_name, prev_version=file1, new_version=False)
+
+                    if version_ctrl.locked == True:
+                            messages.error(request, 'File is locked for further updated. Contact the file owner for new changes.')
+                            return redirect('upload')
                     
                     name = name + '_' + str(version_ctrl.version + 1)
                     version = version_ctrl.version + 1
@@ -106,6 +110,9 @@ def upload_files(request):
                         file1 = Files.objects.get(name=name, extension=type)
                         name = name + '_' + str(file1.version + 1)
                         version = file1.version + 1
+                        if file1.locked == True:
+                            messages.error(request, 'File is locked for further updated. Contact the file owner for new changes.')
+                            return redirect('upload')
                         
                         vc = Version_control.objects.create(name=name, prev_version=file1, file=file, org_name=org_name, uploaded_by = request.user, version=version, group=group, extension=type)
                         vc.save()
@@ -444,6 +451,31 @@ def change_group(request, pk, type):
     
 
 @login_required(login_url='login')
+def change_locked(request, pk, type):
+    if not check_user_status(request):
+        messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
+        return redirect('logout')
+    
+    if request.method == "POST":
+    
+        if type == "version":
+            data = Version_control.objects.get(pk=pk)
+        if type == "file":
+            data = Files.objects.get(pk=pk)
+
+        if data.locked == True:
+            data.locked = False
+        else:
+            data.locked = True
+        try:
+            data.save()
+        except Exception as e:  
+            messages.error(request, 'Changes cannot be made, Please try again later')
+        
+        return redirect('edit_file', pk=pk, type=type)
+    
+
+@login_required(login_url='login')
 def extract_text(request):
     if not check_user_status(request):
         messages.error(request, 'Your account is not active. Please contact admin to activate your account.')
@@ -465,7 +497,8 @@ def extract_text(request):
             else:
                 text = extract_text_from_pdf(new.file.path, type)
 
-            text = ' '.join(text)               
+            text = ' '.join(text)
+            print(text)               
             context = {'data':text}
         except Exception as e:
             print(e)

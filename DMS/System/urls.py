@@ -16,6 +16,7 @@ urlpatterns = [
     path("active_change/<str:pk>", views.active_change, name="active_change"),
     path("file/<str:pk>/<str:type>", views.view_file, name="view"),
     path("change_group/<str:pk>/<str:type>", views.change_group, name="change_group"),
+    path("change_locked/<str:pk>/<str:type>", views.change_locked, name="change_locked"),
     path("download/<str:pk>/<str:type>", views.download, name="download"),
     path("edit_file/<str:pk>/<str:type>", views.edit_file, name="edit_file"),
     path("extract/", views.extract_text, name="extract"),

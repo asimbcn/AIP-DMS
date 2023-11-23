@@ -24,6 +24,7 @@ class Files(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     new_version = models.BooleanField(default=False)
     file_content = models.TextField(blank=True, null=True)
+    locked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -61,6 +62,7 @@ class Version_control(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     new_version = models.BooleanField(default=False)
     file_content = models.TextField(blank=True, null=True)
+    locked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
