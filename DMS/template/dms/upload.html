@@ -17,7 +17,7 @@
             <header>
             {%if messages%}
             {% for message in messages %}
-            <h4 style="color: red;">{{message}}</h4>
+            <h4 style="color: red; font-size: 12px;">{{message}}</h4>
             {%endfor%}
             {%else%}
             <h4>Select File here</h4>
@@ -25,6 +25,9 @@
             </header>
             <br>
             <input type="file" name="file" id="fil" style="display: none;" onchange="updateLabel()">
+            {% if second %}
+            <input type="text" name="second" id="second" value="second" hidden>
+            {% endif %}
             <p><label for="fil" id="fileLabel">Click Here .... </label> </p>
             <p style="all: revert; font-size: small;"><label for="group">Visible group:</label>
               <select id="group" name="group">

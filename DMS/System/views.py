@@ -11,6 +11,7 @@ from django.contrib.auth import password_validation
 from django.db.models.functions import Extract
 # from pypdf import PdfReader
 import re
+import datetime
 # Create your views here.
 
 
@@ -70,6 +71,11 @@ def upload_files(request):
             org_name = clean_name(name)
             group = request.POST['group']
             print(name, org_name)
+            try:
+                if request.POST['second'] == "second":
+                    second = True
+            except:
+                second = False   
         except:
             messages.error(request, 'Please choose a file to upload!')
             return redirect('upload')
@@ -85,6 +91,13 @@ def upload_files(request):
                     if version_ctrl.locked == True:
                             messages.error(request, 'File is locked for further updated. Contact the file owner for new changes.')
                             return redirect('upload')
+                    if second == False:
+                        if version_ctrl.created_at.date() == datetime.date.today():
+                            messages.error(request, 'File has been updated recently. Please review the changes before new merger.')
+                            profile = UserInfo.objects.get(user=request.user)
+                            context = { 'upload':'upload', 'user':profile,'second':'second'}
+                            return render(request, 'dms/upload.html', context)
+                        
                     
                     name = name + '_' + str(version_ctrl.version + 1)
                     version = version_ctrl.version + 1
@@ -113,6 +126,13 @@ def upload_files(request):
                         if file1.locked == True:
                             messages.error(request, 'File is locked for further updated. Contact the file owner for new changes.')
                             return redirect('upload')
+                        
+                        if second == False:
+                            if file1.created_at.date() == datetime.date.today():
+                                messages.error(request, 'File has been updated recently. Please review the changes before new merger.')
+                                profile = UserInfo.objects.get(user=request.user)
+                                context = { 'upload':'upload', 'user':profile,'second':'second'}
+                                return render(request, 'dms/upload.html', context)
                         
                         vc = Version_control.objects.create(name=name, prev_version=file1, file=file, org_name=org_name, uploaded_by = request.user, version=version, group=group, extension=type)
                         vc.save()
